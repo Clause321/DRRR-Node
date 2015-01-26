@@ -1,0 +1,71 @@
+*
+{
+	padding:0px;
+	margin:0px;
+}
+
+body
+{
+	background-color:black;
+}
+
+div#body
+{
+	width:620px;
+	text-align:center;
+	//background-color: ;
+	position:relative;
+	left:25%;
+	padding-bottom:80px;
+}
+
+img#logo
+{
+	position:relative;
+	width: 490px;
+}
+
+
+div#login
+{
+	padding-top:10px;
+	position: relative;
+	width:250px;
+	margin:auto;
+}
+
+div#login ul.icons
+{
+	list-style-type:none;
+	width:250px;
+}
+
+div#login form
+{
+	width:250px;
+	color:white;
+	font-weight:bold;
+	font-family:Arial,Meiryo;
+}
+
+div#login ul.icons li
+{
+	list-style:none outside none;
+	width:60px;
+	display:inline;
+	text-align:center;
+	float:left;
+}
+
+div#login input.textbox
+{
+	text-align:center;
+	clear:none;
+	margin:10px;
+}
+
+div#login input.botton
+{
+	//padding:0px, 16px;
+	width:160px;
+}
