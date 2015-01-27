@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'DRRR2.wsgi.application'
 # }
 
 import yaml
-config = yaml.load(file('config.yaml', 'r'))
+config = yaml.load(file(os.path.join(BASE_DIR, 'config.yaml'), 'r'))
 
 DATABASES = {
     'default': {
