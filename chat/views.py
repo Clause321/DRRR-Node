@@ -5,14 +5,9 @@ from django.views.decorators.http import require_http_methods
 from models import ChatRoom
 from models import Users
 
-chat = ChatRoom.objects.get(name="DRRR")
-
 def index(request):
     return render_to_response('index.html')
 
-
-
-# only for small number of users
 # no check for conflicting user names
 # no password
 
@@ -20,6 +15,7 @@ def index(request):
 @require_http_methods(["POST"])
 def check(request):
     name = request.POST['username']
+    chat = ChatRoom.objects.get(name="DRRR")
     try:
         ic = request.POST['icon']
     except:
