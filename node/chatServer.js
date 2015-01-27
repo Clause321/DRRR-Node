@@ -28,6 +28,6 @@ io.on('connection', function(client){
     });
 });
 
-server.listen(8080);
+server.listen(8080, 'chat.feiclause.com');
 
 console.log('listening to port 8080');
