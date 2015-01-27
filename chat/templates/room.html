@@ -3,16 +3,16 @@
 <html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html"; charset="utf-8">
     <script type="text/javascript" src="{% static "chat/js/jquery-1.11.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "chat/js/socket.io.js" %}"></script>
     <link rel="stylesheet" href="{% static "chat/css/chatroom.css" %}" type="text/css" media="screen" />
 </head>
 
 <body>
     <div id= "sendbox">
         <form  id="messageform" name="sendform">
-            <h>{{ chat.name }}
-            </h>
+            <h2>{{ chat.name }}
+            </h2>
             <textarea name="text" id="inputbox" autofocus></textarea>
             <button type="button" id="post" onclick="sendmessage()">POST!</button>
         </form>
@@ -20,5 +20,54 @@
 
     <div id= "chatbox">
     </div>
+
+    <script>
+        var sound = new Audio("{% static "chat/sound/sound.mp3" %}");
+        var inputBox = document.getElementById("inputbox");
+
+        var socket = io.connect('http://chat.feiclause.com:8080');
+{#        var socket = io.connect('localhost:8080');#}
+
+        socket.on('connect', function(){
+            var data = {username: '{{ user.username }}', icon: '{{ user.icon }}'};
+            socket.emit('join', data);
+        });
+
+        socket.on('announce', function(msg){
+            var line = document.createElement('dl');
+            $(line).prepend(msg);
+            $("#chatbox").prepend(line);
+        });
+
+        socket.on('message', function(data){
+            sound.play();
+            var dl_element = document.createElement('dl');
+            dl_element.setAttribute('class', data.icon);
+            var dt_element = document.createElement('dt');
+            $(dt_element).prepend(data.username);
+            var dd_element = document.createElement('dd');
+            $(dd_element).prepend(data.msg);
+            $(dl_element).prepend(dd_element);
+            $(dl_element).prepend(dt_element);
+            $('#chatbox').prepend(dl_element);
+        });
+
+        var sendmessage = function(){
+            socket.emit('message', inputBox.value);
+            inputBox.value = '';
+        };
+
+        inputBox.addEventListener("keydown", function(e) {
+{#            if (!e) {#}
+{#                var e = window.event;#}
+{#            }#}
+{#            e.defaultPrevented;#}
+            if (e.keyCode == 13) {
+{#                e.defualtPrevented;#}
+                sendmessage();
+            }
+        }, false);
+
+    </script>
 </body>
 </html>
