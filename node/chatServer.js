@@ -18,7 +18,7 @@ io.on('connection', function(client){
 
     client.on('join', function(data){
         his_queue.all(function(err, items){
-            for(var i = items.length - 1; i >= 0; i--){
+            for(var i = 0; i < items.length; ++i){
                 var obj = JSON.parse(items[i]);
                 if(obj.type == 'announce') client.emit('announce', obj.content);
                 else client.emit('message', obj.content);
