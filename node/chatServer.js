@@ -17,6 +17,12 @@ io.on('connection', function(client){
     console.log('Client connected...');
 
     client.on('join', function(data){
+        client.icon = data.icon;
+        client.username = data.username;
+        var res = '--' + client.username + ' logged in.';
+        client.broadcast.emit('announce', res);
+        his_queue.add(JSON.stringify({type: "announce", content: res}), function(err){});
+
         his_queue.all(function(err, items){
             for(var i = items.length - 1; i >= 0; i--){
                 var obj = JSON.parse(items[i]);
@@ -24,13 +30,6 @@ io.on('connection', function(client){
                 else client.emit('message', obj.content);
             }
         });
-
-        client.icon = data.icon;
-        client.username = data.username;
-        var res = '--' + client.username + ' logged in.';
-        client.emit('announce', res);
-        client.broadcast.emit('announce', res);
-        his_queue.add(JSON.stringify({type: "announce", content: res}), function(err){});
     });
 
     client.on('message', function(msg){
