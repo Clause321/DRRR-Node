@@ -7,7 +7,7 @@ var io = require('socket.io')(server);
 var redis_client = require('redis').createClient();
 var Rebound = require("node-rebound");
 
-his_queue = new Rebound({
+var his_queue = new Rebound({
     size: 40,
     redis: redis_client,
     namespace: 'rebound-his-queue'
@@ -18,9 +18,10 @@ io.on('connection', function(client){
 
     client.on('join', function(data){
         his_queue.all(function(err, items){
-            for(var i = items.length - 1; i >= 0; --i){
-                if(items[i].type == 'announce') client.emit('announce', items[i].content);
-                else client.emit('message', items[i].content);
+            for(var i = items.length - 1; i >= 0; i--){
+                var obj = JSON.parse(items[i]);
+                if(obj.type == 'announce') client.emit('announce', obj.content);
+                else client.emit('message', obj.content);
             }
         });
 
@@ -29,25 +30,24 @@ io.on('connection', function(client){
         var res = '--' + client.username + ' logged in.';
         client.emit('announce', res);
         client.broadcast.emit('announce', res);
-        his_queue.add({type: 'announce', content: res});
+        his_queue.add(JSON.stringify({type: "announce", content: res}), function(err){});
     });
 
     client.on('message', function(msg){
         var res = {msg: msg, username: client.username, icon: client.icon};
         client.emit('message', res);
         client.broadcast.emit('message', res);
-        his_queue.add({type: 'message', content: res});
+        his_queue.add(JSON.stringify({type: "message", content: res}), function(err){});
     });
 
     client.on('disconnect', function(){
         var res = '--' + client.username + ' logged out';
         client.emit('announce', res);
         client.broadcast.emit('announce', res);
-        his_queue.add({type: 'announce', content: res});
+        his_queue.add(JSON.stringify({type: "announce", content: res}), function(err){});
     });
 });
 
-//server.listen(8080, 'chat.feiclause.com');
-server.listen(8080, 'localhost');
+server.listen(8080, 'chat.feiclause.com');
 
 console.log('listening to port 8080');
